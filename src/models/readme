@@ -1,0 +1,2 @@
+execution: python3.6 test.py --image <image> --mask <mask.png>  --checkpoint model_logs/<directory>
+
