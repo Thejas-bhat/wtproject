@@ -5,11 +5,15 @@ import { Stage, Layer, Image, Line, Text } from "react-konva";
 import UseImage from 'use-image';
 import './Custom.css';
 
+// import ImageUploader from 'react-images-upload';
+
 const LionImage = () => {
     const [image] = UseImage('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg');
-    
+
     return <Image className = "image" image={image} />;
   };
+
+
 
 class Test extends Component {
   state = {
