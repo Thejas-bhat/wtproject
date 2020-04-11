@@ -1,18 +1,6 @@
 import React, { Component } from "react";
-import Konva from "konva";
-import { render } from "react-dom";
-import { Stage, Layer, Image, Line, Text } from "react-konva";
-import UseImage from 'use-image';
-import './Custom.css';
-
-// import ImageUploader from 'react-images-upload';
-
-const LionImage = () => {
-    const [image] = UseImage('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg');
-
-    return <Image className = "image" image={image} />;
-  };
-
+import { Stage, Layer, Line} from "react-konva";
+import './App.css';
 
 
 class Test extends Component {
@@ -55,9 +43,8 @@ class Test extends Component {
   render() {
     return (
       <Stage
-        className = "drawArea"
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={1920}
+        height={1080}
         onContentMousedown={this.handleMouseDown}
         onContentMousemove={this.handleMouseMove}
         onContentMouseup={this.handleMouseUp}
@@ -66,9 +53,9 @@ class Test extends Component {
         }}
       >
         <Layer >
-        <LionImage />
+
           {this.state.lines.map((line, i) => (
-            <Line  key={i} points={line} stroke="black" />
+            <Line key={i} points={line} strokeWidth = "20" stroke="black" />
           ))}
         </Layer>
       </Stage>
