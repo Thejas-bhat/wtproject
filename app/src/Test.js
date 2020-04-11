@@ -43,8 +43,8 @@ class Test extends Component {
   render() {
     return (
       <Stage
-        width={400}
-        height={400}
+        width={1920}
+        height={1080}
         onContentMousedown={this.handleMouseDown}
         onContentMousemove={this.handleMouseMove}
         onContentMouseup={this.handleMouseUp}

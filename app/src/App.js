@@ -19,8 +19,9 @@ class Upload extends Component {
 
     // console.log(newCanvas.style == oldCanvas.style);
     var ctx = newCanvas.getContext("2d");
-    ctx.drawImage(uploadedImage, 0, 0);
-
+    ctx.drawImage(uploadedImage, 0, 0, uploadedImage.width, uploadedImage.height,
+                                  0, 0, newCanvas.width, newCanvas.height);
+    console.log(uploadedImage.width);
     canvasPapa.removeChild(canvasPapa.childNodes[0]);
     canvasPapa.appendChild(newCanvas);
     canvasPapa.appendChild(oldCanvas);
