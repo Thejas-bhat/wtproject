@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, session
+from flask import Flask, flash, request, redirect, url_for, session, send_file
 from werkzeug.utils import secure_filename
 # from flask_cors import CORS, cross_origin
 import logging
@@ -28,7 +28,9 @@ def fileUpload():
     file.save(destination)
     session['uploadFilePath']=destination
     response="Whatever you wish to return"
-    return response
+
+
+    return send_file("./dummy.png", mimetype='image/gif')
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
