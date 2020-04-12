@@ -11,7 +11,7 @@ class Upload extends Component {
     var uploadedImage = document.getElementsByClassName("imgPreview")[0].firstChild;
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = canvasPapa.firstChild;
-    
+
     var newCanvas = document.createElement("canvas");
     newCanvas.id = "myCanv";
     const computedStyle = window.getComputedStyle(oldCanvas);
@@ -19,6 +19,9 @@ class Upload extends Component {
 
     // console.log(newCanvas.style == oldCanvas.style);
     var ctx = newCanvas.getContext("2d");
+    newCanvas.style.setProperty("height", uploadedImage.height);
+    newCanvas.style.setProperty("width", uploadedImage.width);
+
     ctx.drawImage(uploadedImage, 0, 0, uploadedImage.width, uploadedImage.height,
                                   0, 0, newCanvas.width, newCanvas.height);
     console.log(uploadedImage.width);
