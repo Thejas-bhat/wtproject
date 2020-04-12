@@ -9,6 +9,7 @@ class Upload extends Component {
   }
   renderTheImage(){
     var uploadedImage = document.getElementsByClassName("imgPreview")[0].firstChild;
+
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = canvasPapa.firstChild;
 
@@ -42,6 +43,20 @@ class Upload extends Component {
 
     let reader = new FileReader();
     let file = e.target.files[0];
+
+    const data = new FormData();
+    data.append('file', file);
+    data.append('filename', "gen.png");
+
+    fetch('http://0.0.0.0:5000/upload', {
+      method: 'POST',
+      body: data,
+    }).then((response) => {
+      response.json().then((body) => {
+        this.setState({ imageURL: `http://localhost:8000/${body.file}` });
+      });
+    });
+
 
     reader.onloadend = () => {
       this.setState({
