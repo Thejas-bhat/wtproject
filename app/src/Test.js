@@ -36,8 +36,32 @@ class Test extends Component {
     });
   };
 
+  dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+  }
+
   handleMouseUp = () => {
     this._drawing = false;
+    var b64 = document.getElementById("oldboi").toDataURL("image/png");
+    var file = this.dataURLtoFile(b64, 'mask.png');
+
+    const data = new FormData();
+    data.append('file', file);
+    data.append('filename', "mask.png");
+
+    fetch('http://0.0.0.0:5000/upload', {
+      method: 'POST',
+      body: data,
+    }).then((response) => {
+      response.json().then((body) => {
+        this.setState({ imageURL: `http://localhost:5000/${body.file}` });
+      });
+    });
   };
 
   render() {

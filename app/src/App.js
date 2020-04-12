@@ -9,7 +9,7 @@ class Upload extends Component {
   }
 
   resizeCanvasImage(img, canvas, maxWidth, maxHeight) {
-      var imgWidth = img.width, 
+      var imgWidth = img.width,
           imgHeight = img.height;
 
       var ratio = 1, ratio1 = 1, ratio2 = 1;
@@ -30,12 +30,12 @@ class Upload extends Component {
       var canvasCopy2 = document.createElement("canvas");
       var copyContext2 = canvasCopy2.getContext("2d");
       canvasCopy.width = imgWidth;
-      canvasCopy.height = imgHeight;  
+      canvasCopy.height = imgHeight;
       copyContext.drawImage(img, 0, 0);
 
       // init
       canvasCopy2.width = imgWidth;
-      canvasCopy2.height = imgHeight;        
+      canvasCopy2.height = imgHeight;
       copyContext2.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height, 0, 0, canvasCopy2.width, canvasCopy2.height);
 
 
@@ -66,50 +66,22 @@ class Upload extends Component {
 
   }
 
-  dataURLtoFile(dataurl, filename) {
-    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, {type:mime});
-  }
-  _complete(e){
-    e.preventDefault();
-    var canvasPapa = document.getElementById("container").firstChild.firstChild;
-    var oldCanvas = canvasPapa.childNodes[1];
-    var b64 = oldCanvas.toDataURL("image/png");
-    var file = this.dataURLtoFile(b64, 'mask.png');
-    
-    const data = new FormData();
-    data.append('file', file);
-    data.append('filename', "mask.png");
-
-    fetch('http://0.0.0.0:5000/upload', {
-      method: 'POST',
-      body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        this.setState({ imageURL: `http://localhost:8000/${body.file}` });
-      });
-    });
-    
-  }
 
   renderTheImage(){
     var uploadedImage = document.getElementsByClassName("imgPreview")[0].firstChild;
 
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = canvasPapa.firstChild;
+    oldCanvas.id = "oldboi";
 
     var newCanvas = document.createElement("canvas");
     newCanvas.id = "myCanv";
     const computedStyle = window.getComputedStyle(oldCanvas);
     Array.from(computedStyle).forEach(key => newCanvas.style.setProperty(key, computedStyle.getPropertyValue(key), computedStyle.getPropertyPriority(key)));
-    
+
     newCanvas.style.setProperty("height", uploadedImage.height);
     newCanvas.style.setProperty("width", uploadedImage.width);
-    
+
     this.resizeCanvasImage(uploadedImage, newCanvas, uploadedImage.width, uploadedImage.height);
     // console.log(uploadedImage.width);
     canvasPapa.removeChild(canvasPapa.childNodes[0]);
