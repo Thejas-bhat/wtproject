@@ -7,6 +7,68 @@ class Upload extends Component {
     super(props);
     this.state = {file: '',imagePreviewUrl: ''};
   }
+
+
+  resizeCanvasImage(img, canvas, maxWidth, maxHeight) {
+      var imgWidth = img.width, 
+          imgHeight = img.height;
+
+      var ratio = 1, ratio1 = 1, ratio2 = 1;
+      ratio1 = maxWidth / imgWidth;
+      ratio2 = maxHeight / imgHeight;
+
+      // Use the smallest ratio that the image best fit into the maxWidth x maxHeight box.
+      if (ratio1 < ratio2) {
+          ratio = ratio1;
+      }
+      else {
+          ratio = ratio2;
+      }
+
+      var canvasContext = canvas.getContext("2d");
+      var canvasCopy = document.createElement("canvas");
+      var copyContext = canvasCopy.getContext("2d");
+      var canvasCopy2 = document.createElement("canvas");
+      var copyContext2 = canvasCopy2.getContext("2d");
+      canvasCopy.width = imgWidth;
+      canvasCopy.height = imgHeight;  
+      copyContext.drawImage(img, 0, 0);
+
+      // init
+      canvasCopy2.width = imgWidth;
+      canvasCopy2.height = imgHeight;        
+      copyContext2.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height, 0, 0, canvasCopy2.width, canvasCopy2.height);
+
+
+      var rounds = 2;
+      var roundRatio = ratio * rounds;
+      for (var i = 1; i <= rounds; i++) {
+          console.log("Step: "+i);
+
+          // tmp
+          canvasCopy.width = imgWidth * roundRatio / i;
+          canvasCopy.height = imgHeight * roundRatio / i;
+
+          copyContext.drawImage(canvasCopy2, 0, 0, canvasCopy2.width, canvasCopy2.height, 0, 0, canvasCopy.width, canvasCopy.height);
+
+          // copy back
+          canvasCopy2.width = imgWidth * roundRatio / i;
+          canvasCopy2.height = imgHeight * roundRatio / i;
+          copyContext2.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height, 0, 0, canvasCopy2.width, canvasCopy2.height);
+
+      } // end for
+
+
+      // copy back to canvas
+      canvas.width = imgWidth * roundRatio / rounds;
+      canvas.height = imgHeight * roundRatio / rounds;
+      canvasContext.drawImage(canvasCopy2, 0, 0, canvasCopy2.width, canvasCopy2.height, 0, 0, canvas.width, canvas.height);
+
+
+  }
+
+
+
   renderTheImage(){
     var uploadedImage = document.getElementsByClassName("imgPreview")[0].firstChild;
 
@@ -17,15 +79,19 @@ class Upload extends Component {
     newCanvas.id = "myCanv";
     const computedStyle = window.getComputedStyle(oldCanvas);
     Array.from(computedStyle).forEach(key => newCanvas.style.setProperty(key, computedStyle.getPropertyValue(key), computedStyle.getPropertyPriority(key)));
-
-    // console.log(newCanvas.style == oldCanvas.style);
-    var ctx = newCanvas.getContext("2d");
+    
     newCanvas.style.setProperty("height", uploadedImage.height);
     newCanvas.style.setProperty("width", uploadedImage.width);
-
-    ctx.drawImage(uploadedImage, 0, 0, uploadedImage.width, uploadedImage.height,
-                                  0, 0, newCanvas.width, newCanvas.height);
-    console.log(uploadedImage.width);
+    
+    this.resizeCanvasImage(uploadedImage, newCanvas, uploadedImage.width, uploadedImage.height);
+    
+    // console.log(newCanvas.style == oldCanvas.style);
+    // var ctx = newCanvas.getContext("2d");
+    
+    // ctx.imageSmoothingEnabled = false;
+    // ctx.drawImage(uploadedImage, 0, 0, uploadedImage.width, uploadedImage.height,
+    //                               0, 0, newCanvas.width, newCanvas.height);
+    // console.log(uploadedImage.width);
     canvasPapa.removeChild(canvasPapa.childNodes[0]);
     canvasPapa.appendChild(newCanvas);
     canvasPapa.appendChild(oldCanvas);
