@@ -8,7 +8,6 @@ class Upload extends Component {
     this.state = {file: '',imagePreviewUrl: ''};
   }
 
-
   resizeCanvasImage(img, canvas, maxWidth, maxHeight) {
       var imgWidth = img.width, 
           imgHeight = img.height;
@@ -67,7 +66,35 @@ class Upload extends Component {
 
   }
 
+  dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+  }
+  _complete(e){
+    e.preventDefault();
+    var canvasPapa = document.getElementById("container").firstChild.firstChild;
+    var oldCanvas = canvasPapa.childNodes[1];
+    var b64 = oldCanvas.toDataURL("image/png");
+    var file = this.dataURLtoFile(b64, 'mask.png');
+    
+    const data = new FormData();
+    data.append('file', file);
+    data.append('filename', "mask.png");
 
+    fetch('http://0.0.0.0:5000/upload', {
+      method: 'POST',
+      body: data,
+    }).then((response) => {
+      response.json().then((body) => {
+        this.setState({ imageURL: `http://localhost:8000/${body.file}` });
+      });
+    });
+    
+  }
 
   renderTheImage(){
     var uploadedImage = document.getElementsByClassName("imgPreview")[0].firstChild;
@@ -84,18 +111,12 @@ class Upload extends Component {
     newCanvas.style.setProperty("width", uploadedImage.width);
     
     this.resizeCanvasImage(uploadedImage, newCanvas, uploadedImage.width, uploadedImage.height);
-    
-    // console.log(newCanvas.style == oldCanvas.style);
-    // var ctx = newCanvas.getContext("2d");
-    
-    // ctx.imageSmoothingEnabled = false;
-    // ctx.drawImage(uploadedImage, 0, 0, uploadedImage.width, uploadedImage.height,
-    //                               0, 0, newCanvas.width, newCanvas.height);
     // console.log(uploadedImage.width);
     canvasPapa.removeChild(canvasPapa.childNodes[0]);
     canvasPapa.appendChild(newCanvas);
     canvasPapa.appendChild(oldCanvas);
   }
+
   _handleSubmit(e) {
     e.preventDefault();
     // TODO: do something with -> this.state.file
@@ -156,6 +177,7 @@ class Upload extends Component {
         <div className="imgPreview">
           {$imagePreview}
         </div>
+        <button type = "button" onClick = {(e)=>this._complete(e)}>Inpaint the image</button>
       </div>
     )
   }
