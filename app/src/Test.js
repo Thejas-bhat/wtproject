@@ -109,6 +109,9 @@ class Test extends Component {
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = document.getElementById("oldboi");
     
+    this.setState({
+      lines: []
+    });
 
     this._drawing = false;
     var b64 = oldCanvas.toDataURL("image/png");
