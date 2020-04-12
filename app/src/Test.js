@@ -57,6 +57,7 @@ class Test extends Component {
     fetch('http://0.0.0.0:5000/upload', {
       method: 'POST',
       body: data,
+    
     });
   };
 

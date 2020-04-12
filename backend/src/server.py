@@ -32,7 +32,7 @@ def fileUpload():
     response="Whatever you wish to return"
 
 
-    return send_file("/home/tejvi/WTProject/test_docs/code2.png", mimetype='image/gif')
+    return send_file("test_docs/prep.png", mimetype='image/gif')
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
