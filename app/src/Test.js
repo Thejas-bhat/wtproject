@@ -108,7 +108,7 @@ class Test extends Component {
     stage.clear();
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = document.getElementById("oldboi");
-    
+
     this.setState({
       lines: []
     });
@@ -121,7 +121,7 @@ class Test extends Component {
     data.append('file', file);
     data.append('filename', "mask.png");
 
-    fetch('http://0.0.0.0:5000/upload', {
+    fetch('http://0.0.0.0:5000/send_mask', {
           method: 'POST',
           body: data,
         }).then((response) => {
@@ -136,12 +136,12 @@ class Test extends Component {
       myImage.src = URL.createObjectURL(myBlob);
       var oldthis = this;
       myImage.onload = function() {
-        
+
         oldthis.resizeCanvasImage(myImage, canvas, myImage.width, myImage.height);
       }
       console.log(myBlob);
       console.log("result from server", myImage, canvas);
-      
+
       canvasPapa.removeChild(canvasPapa.childNodes[0]);
       canvasPapa.appendChild(canvas);
       canvasPapa.appendChild(oldCanvas);
