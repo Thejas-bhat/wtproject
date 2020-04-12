@@ -49,7 +49,8 @@ def mask():
     npimg = np.fromstring(file1.read(), np.uint8)
     mask = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
-    print(mask.shape)
+    cropped_mask = mask[:images[0].shape[0], :images[0].shape[1], :]
+    print(cropped_mask.shape)
 
     cv2.imwrite("hell.png", images[0])
 

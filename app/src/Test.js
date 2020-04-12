@@ -167,7 +167,7 @@ class Test extends Component {
         <Layer >
 
           {this.state.lines.map((line, i) => (
-            <Line key={i} points={line} strokeWidth = "20" stroke="black" />
+            <Line key={i} points={line} strokeWidth = "20" stroke="white" />
           ))}
         </Layer>
       </Stage>

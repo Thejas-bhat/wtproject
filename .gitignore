@@ -5,3 +5,6 @@
 *package-lock.json
 *test_docs*
 node_modules
+*.png
+*.jpg
+*.jpeg
