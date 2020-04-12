@@ -57,10 +57,6 @@ class Test extends Component {
     fetch('http://0.0.0.0:5000/upload', {
       method: 'POST',
       body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        this.setState({ imageURL: `http://localhost:5000/${body.file}` });
-      });
     });
   };
 

@@ -110,10 +110,6 @@ class Upload extends Component {
     fetch('http://0.0.0.0:5000/upload', {
       method: 'POST',
       body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        this.setState({ imageURL: `http://localhost:8000/${body.file}` });
-      });
     });
 
 
@@ -149,7 +145,7 @@ class Upload extends Component {
         <div className="imgPreview">
           {$imagePreview}
         </div>
-        <button type = "button" onClick = {(e)=>this._complete(e)}>Inpaint the image</button>
+        // <button type = "button" onClick = {(e)=>this._complete(e)}>Inpaint the image</button>
       </div>
     )
   }
