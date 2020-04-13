@@ -6,22 +6,63 @@ import flask_cors
 import logging
 import cv2
 import numpy as np
+import tensorflow as tf
+import neuralgym as ng
+
+from models.inpaint_model import InpaintCAModel
 
 logging.basicConfig(level=logging.INFO)
 
-logger = logging.getLogger('HELLO WORLD')
-
-
-
-UPLOAD_FOLDER = './'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 flask_cors.CORS(app, expose_headers="Access-Control-Allow-Origin: *")
 
 images = []
 overlayed = []
+
+FLAGS = ng.Config('models/inpaint.yml')
+
+
+
+def getInpaintedImage(image, mask):
+
+
+    model = InpaintCAModel()
+
+    assert image.shape == mask.shape
+
+    h, w, _ = image.shape
+    grid = 8
+    image = image[:h//grid*grid, :w//grid*grid, :]
+    mask = mask[:h//grid*grid, :w//grid*grid, :]
+
+    print('Shape of image: {}'.format(image.shape))
+
+    image = np.expand_dims(image, 0)
+    mask = np.expand_dims(mask, 0)
+    input_image = np.concatenate([image, mask], axis=2)
+
+    sess_config = tf.ConfigProto()
+    sess_config.gpu_options.allow_growth = True
+
+    with tf.Session(config=sess_config) as sess:
+        input_image = tf.constant(input_image, dtype=tf.float32)
+        output = model.build_server_graph(FLAGS, input_image)
+        output = (output + 1.) * 127.5
+        output = tf.reverse(output, [-1])
+        output = tf.saturate_cast(output, tf.uint8)
+        # load pretrained model
+        vars_list = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
+        assign_ops = []
+        for var in vars_list:
+            vname = var.name
+            from_name = vname
+            var_value = tf.contrib.framework.load_variable("models/model_logs/release_places2_256_deepfill_v2/", from_name)
+            assign_ops.append(tf.assign(var, var_value))
+        sess.run(assign_ops)
+        print('Model loaded.')
+        result = sess.run(output)
+        return result[0][:, :, ::-1]
+
 @app.route('/upload', methods=['POST'])
 def fileUpload():
 
@@ -41,7 +82,6 @@ def fileUpload():
 
 @app.route('/send_mask', methods=['POST'])
 def mask():
-    logger.info("kill me")
 
     file1 = request.files['file']
     npimg = np.fromstring(file1.read(), np.uint8)
@@ -53,12 +93,15 @@ def mask():
     overlayed = cv2.addWeighted(images[0], 1, cropped_mask, 0, 0)
 
     overlay = cv2.bitwise_or(cropped_mask, images[0])
+
     cv2.imwrite("hell.png", images[0])
     cv2.imwrite("hell1.png", overlay)
     cv2.imwrite("mask1.png", cropped_mask)
 
+    res = getInpaintedImage(images[0], cropped_mask)
+    cv2.imwrite("inpainted.png", res)
 
-    return send_file("hell.png", mimetype='image/gif')
+    return send_file("inpainted.png", mimetype='image/gif')
 
 
 if __name__ == "__main__":
