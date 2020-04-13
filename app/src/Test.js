@@ -104,18 +104,19 @@ class Test extends Component {
   }
 
   handleMouseUp = () => {
-    var stage = this.stageRef.getStage();
-    stage.clear();
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = document.getElementById("oldboi");
 
-    this.setState({
-      lines: []
-    });
 
     this._drawing = false;
     var b64 = oldCanvas.toDataURL("image/png");
     var file = this.dataURLtoFile(b64, 'mask.png');
+
+    var stage = this.stageRef.getStage();
+    stage.clear();
+    this.setState({
+      lines: []
+    });
 
     const data = new FormData();
     data.append('file', file);
