@@ -21,23 +21,21 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 flask_cors.CORS(app, expose_headers="Access-Control-Allow-Origin: *")
 
 images = []
+overlayed = []
 @app.route('/upload', methods=['POST'])
 def fileUpload():
-    target=os.path.join(UPLOAD_FOLDER,'test_docs')
-    if not os.path.isdir(target):
-        os.mkdir(target)
-    logger.info("welcome to upload`")
+
     global images
+    global overlayed
+
     images = []
+    overlayed = []
     file1 = request.files['file']
     npimg = np.fromstring(file1.read(), np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     images.append(img)
+    overlayed.append(img)
     print(img.shape)
-    # filename = secure_filename(file.filename)
-    # destination="/".join([target, filename])
-    # file.save(destination)
-    # session['uploadFilePath']=destination
 
     return "OK"
 
@@ -52,7 +50,12 @@ def mask():
     cropped_mask = mask[:images[0].shape[0], :images[0].shape[1], :]
     print(cropped_mask.shape)
 
+    overlayed = cv2.addWeighted(images[0], 1, cropped_mask, 0, 0)
+
+    overlay = cv2.bitwise_or(cropped_mask, images[0])
     cv2.imwrite("hell.png", images[0])
+    cv2.imwrite("hell1.png", overlay)
+    cv2.imwrite("mask1.png", cropped_mask)
 
 
     return send_file("hell.png", mimetype='image/gif')
