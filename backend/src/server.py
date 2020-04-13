@@ -18,6 +18,7 @@ flask_cors.CORS(app, expose_headers="Access-Control-Allow-Origin: *")
 
 images = []
 overlayed = []
+masks = []
 
 FLAGS = ng.Config('models/inpaint.yml')
 
@@ -68,9 +69,11 @@ def fileUpload():
 
     global images
     global overlayed
+    global masks
 
     images = []
     overlayed = []
+    masks = []
     file1 = request.files['file']
     npimg = np.fromstring(file1.read(), np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
@@ -90,7 +93,14 @@ def mask():
     cropped_mask = mask[:images[0].shape[0], :images[0].shape[1], :]
     print(cropped_mask.shape)
 
-    overlayed = cv2.addWeighted(images[0], 1, cropped_mask, 0, 0)
+    if(len(masks) >= 1):
+        # cropped_mask = cv2.addWeighted(masks[0], 1, cropped_mask, 0, 0)
+        cropped_mask = cv2.bitwise_or(cropped_mask, masks[0])
+        masks[0] = cropped_mask
+    else:
+        masks.append(cropped_mask)
+
+    # overlayed = cv2.addWeighted(images[0], 1, cropped_mask, 0, 0)
 
     overlay = cv2.bitwise_or(cropped_mask, images[0])
 
