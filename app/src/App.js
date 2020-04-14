@@ -114,10 +114,16 @@ class Upload extends Component {
       return response.blob();
     })
     .then((notmyBlob) => {
-      var myImage = document.createElement("a");
-      myImage.href = URL.createObjectURL(notmyBlob);
-      myImage.download = "image.png";
-      myImage.click();
+      // console.log("gow ", response, notmyBlob);
+      var canvas = document.getElementById("myCanv");
+      var link = document.createElement("a");
+      
+      canvas.toBlob(function(blob){
+        link.href = URL.createObjectURL(blob);
+        link.download = "image.png";
+        link.click();
+      },'image/png');
+      
     })
     .catch((error) => {
       console.error('There has been a problem with your fetch operation:', error);
@@ -134,7 +140,7 @@ class Upload extends Component {
     data.append('file', file);
     data.append('filename', "gen.png");
 
-    var myImage = document.querySelector('#res');
+    // var myImage = document.querySelector('#res');
     fetch('http://0.0.0.0:5000/upload', {
           method: 'POST',
           body: data,
@@ -145,7 +151,7 @@ class Upload extends Component {
       return response.blob();
     })
     .then((myBlob) => {
-      myImage.src = URL.createObjectURL(myBlob);
+      // myImage.src = URL.createObjectURL(myBlob);
 
     })
     .catch((error) => {
