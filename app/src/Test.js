@@ -73,6 +73,8 @@ class Test extends Component {
     this.setState({
       lines: [...this.state.lines, []]
     });
+
+    window.isDrawn = 1;
   };
 
   handleMouseMove = e => {
@@ -105,57 +107,64 @@ class Test extends Component {
   }
 
   send = () => {
-    var canvasPapa = document.getElementById("container").firstChild.firstChild;
-    var oldCanvas = document.getElementById("oldboi");
+
+    if(window.isDrawn === 1){
+      var canvasPapa = document.getElementById("container").firstChild.firstChild;
+      var oldCanvas = document.getElementById("oldboi");
 
 
-    this._drawing = false;
-    var b64 = oldCanvas.toDataURL("image/png");
-    var file = this.dataURLtoFile(b64, 'mask.png');
+      this._drawing = false;
+      var b64 = oldCanvas.toDataURL("image/png");
+      var file = this.dataURLtoFile(b64, 'mask.png');
 
-    var stage = this.stageRef.getStage();
-    stage.clear();
-    this.setState({
-      lines: []
-    });
+      var stage = this.stageRef.getStage();
+      stage.clear();
+      this.setState({
+        lines: []
+      });
+      window.isDrawn = 0;
 
-    var imgCanv = document.getElementById("myCanv");
-    canvasPapa.style.opacity = 0.5;
+      var imgCanv = document.getElementById("myCanv");
+      canvasPapa.style.opacity = 0.5;
 
-    const data = new FormData();
-    data.append('file', file);
-    data.append('filename', "mask.png");
+      const data = new FormData();
+      data.append('file', file);
+      data.append('filename', "mask.png");
 
-    fetch('http://0.0.0.0:5000/send_mask', {
-          method: 'POST',
-          body: data,
-        }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.blob();
-    })
-    .then((myBlob) => {
-      var canvas = document.getElementById("myCanv");
-      var myImage = document.createElement("img");
-      myImage.src = URL.createObjectURL(myBlob);
-      var oldthis = this;
-      myImage.onload = function() {
+      fetch('http://0.0.0.0:5000/send_mask', {
+            method: 'POST',
+            body: data,
+          }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();
+      })
+      .then((myBlob) => {
+        var canvas = document.getElementById("myCanv");
+        var myImage = document.createElement("img");
+        myImage.src = URL.createObjectURL(myBlob);
+        var oldthis = this;
+        myImage.onload = function() {
 
-        oldthis.resizeCanvasImage(myImage, canvas, myImage.width, myImage.height);
-      }
-      console.log(myBlob);
-      console.log("result from server", myImage, canvas);
+          oldthis.resizeCanvasImage(myImage, canvas, myImage.width, myImage.height);
+        }
+        console.log(myBlob);
+        console.log("result from server", myImage, canvas);
 
-      canvasPapa.removeChild(canvasPapa.childNodes[0]);
-      canvasPapa.appendChild(canvas);
-      canvasPapa.appendChild(oldCanvas);
-      canvasPapa.style.opacity = 1;
+        canvasPapa.removeChild(canvasPapa.childNodes[0]);
+        canvasPapa.appendChild(canvas);
+        canvasPapa.appendChild(oldCanvas);
+        canvasPapa.style.opacity = 1;
 
-    })
-    .catch((error) => {
-      console.error('There has been a problem with your fetch operation:', error);
-    });
+      })
+      .catch((error) => {
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+
+      window.isDrawn = 0;
+    }
+
   };
 
   handleMouseUp = () => {
@@ -164,7 +173,7 @@ class Test extends Component {
 
   foo(){
     // tune the interval size for proper submission throttling
-    var d = setInterval(this.send.bind(this), 10000);
+    var d = setInterval(this.send.bind(this), 7000);
   }
 
   handleMouseOver = () => {
