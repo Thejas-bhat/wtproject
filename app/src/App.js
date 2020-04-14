@@ -97,6 +97,11 @@ class Upload extends Component {
     // console.log("hi", a);
   }
 
+  _resetpage(e){
+    e.preventDefault();
+
+    window.location.reload();
+  }
   _complete(e){
     e.preventDefault();
 
@@ -176,6 +181,7 @@ class Upload extends Component {
             type="submit"
             onClick={(e)=>this._handleSubmit(e)}>Upload Image</button>
           <button className="submitButton" type = "button" onClick = {(e)=>this._complete(e)}>Download the image</button>
+           <button className="submitButton" type = "button" onClick = {(e)=>this._resetpage(e)}>Reset page</button>
         </form>
         <div className="imgPreview">
           {$imagePreview}
