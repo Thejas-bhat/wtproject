@@ -1,6 +1,6 @@
 *.pyc
 *examples*
-*model_logs*
+*_logs*
 *node_modules*
 *package-lock.json
 *test_docs*
