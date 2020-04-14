@@ -119,6 +119,9 @@ class Test extends Component {
       lines: []
     });
 
+    var imgCanv = document.getElementById("myCanv");
+    canvasPapa.style.opacity = 0.5;
+
     const data = new FormData();
     data.append('file', file);
     data.append('filename', "mask.png");
@@ -147,6 +150,7 @@ class Test extends Component {
       canvasPapa.removeChild(canvasPapa.childNodes[0]);
       canvasPapa.appendChild(canvas);
       canvasPapa.appendChild(oldCanvas);
+      canvasPapa.style.opacity = 1;
 
     })
     .catch((error) => {
