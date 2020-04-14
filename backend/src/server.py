@@ -114,6 +114,12 @@ def mask():
 
     return send_file("inpainted.png", mimetype='image/gif')
 
+@app.route('/download', methods=['GET'])
+def download():
+
+    cv2.imwrite("inpainted.png", images[0])
+
+    return send_file("inpainted.png", mimetype='image/gif')
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
