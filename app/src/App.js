@@ -186,12 +186,12 @@ class Upload extends Component {
           <button className="submitButton"
             type="submit"
             onClick={(e)=>this._handleSubmit(e)}>Upload Image</button>
+          <button className="submitButton" type = "button" onClick = {(e)=>this._complete(e)}>Download the image</button>
+           <button className="submitButton" type = "button" onClick = {(e)=>this._resetpage(e)}>Reset page</button>
         </form>
         <div className="imgPreview">
           {$imagePreview}
         </div>
-        <button type = "button" onClick = {(e)=>this._complete(e)}>Download the image</button>
-        <button type = "button" onClick = {(e)=>this._resetpage(e)}>Reset page</button>
       </div>
     )
   }
