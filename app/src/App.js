@@ -117,13 +117,13 @@ class Upload extends Component {
       // console.log("gow ", response, notmyBlob);
       var canvas = document.getElementById("myCanv");
       var link = document.createElement("a");
-      
+
       canvas.toBlob(function(blob){
         link.href = URL.createObjectURL(blob);
         link.download = "image.png";
         link.click();
       },'image/png');
-      
+
     })
     .catch((error) => {
       console.error('There has been a problem with your fetch operation:', error);
@@ -179,9 +179,9 @@ class Upload extends Component {
 
     return (
       <div className="previewComponent">
-        <form onSubmit={(e)=>this._handleSubmit(e)}>
+        <form onSubmit={(e)=>this._handleSubmit(e)} >
           <input className="fileInput"
-            type="file"
+            type="file" id="nb"
             onChange={(e)=>this._handleImageChange(e)} />
           <button className="submitButton"
             type="submit"
