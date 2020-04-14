@@ -126,7 +126,7 @@ class Test extends Component {
     data.append('file', file);
     data.append('filename', "mask.png");
 
-    fetch('http://0.0.0.0:5100/upload', {
+    fetch('http://0.0.0.0:5000/send_mask', {
           method: 'POST',
           body: data,
         }).then((response) => {
@@ -164,7 +164,7 @@ class Test extends Component {
 
   foo(){
     // tune the interval size for proper submission throttling
-    var d = setInterval(this.send.bind(this), 3000);
+    var d = setInterval(this.send.bind(this), 10000);
   }
 
   handleMouseOver = () => {

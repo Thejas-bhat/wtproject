@@ -97,6 +97,28 @@ class Upload extends Component {
     // console.log("hi", a);
   }
 
+  _complete(e){
+    e.preventDefault();
+
+    fetch('http://0.0.0.0:5000/download', {
+          method: 'GET',
+        }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.blob();
+    })
+    .then((notmyBlob) => {
+      var myImage = document.createElement("a");
+      myImage.href = URL.createObjectURL(notmyBlob);
+      myImage.download = "image.png";
+      myImage.click();
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+  }
+
   _handleImageChange(e) {
     e.preventDefault();
 
@@ -119,7 +141,7 @@ class Upload extends Component {
     })
     .then((myBlob) => {
       myImage.src = URL.createObjectURL(myBlob);
-      
+
     })
     .catch((error) => {
       console.error('There has been a problem with your fetch operation:', error);
@@ -157,7 +179,7 @@ class Upload extends Component {
         <div className="imgPreview">
           {$imagePreview}
         </div>
-        // <button type = "button" onClick = {(e)=>this._complete(e)}>Inpaint the image</button>
+        <button type = "button" onClick = {(e)=>this._complete(e)}>Download the image</button>
       </div>
     )
   }
