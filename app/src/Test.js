@@ -7,6 +7,7 @@ class Test extends Component {
   state = {
     lines: []
   };
+  barrier = 0;
 
   resizeCanvasImage(img, canvas, maxWidth, maxHeight) {
       var imgWidth = img.width,
@@ -103,7 +104,7 @@ class Test extends Component {
     return new File([u8arr], filename, {type:mime});
   }
 
-  handleMouseUp = () => {
+  send = () => {
     var canvasPapa = document.getElementById("container").firstChild.firstChild;
     var oldCanvas = document.getElementById("oldboi");
 
@@ -122,7 +123,7 @@ class Test extends Component {
     data.append('file', file);
     data.append('filename', "mask.png");
 
-    fetch('http://0.0.0.0:5000/send_mask', {
+    fetch('http://0.0.0.0:5100/upload', {
           method: 'POST',
           body: data,
         }).then((response) => {
@@ -153,6 +154,25 @@ class Test extends Component {
     });
   };
 
+  handleMouseUp = () => {
+      this._drawing = false;
+  };
+
+  foo(){
+    // tune the interval size for proper submission throttling
+    var d = setInterval(this.send.bind(this), 3000);
+  }
+
+  handleMouseOver = () => {
+    console.log("out");
+    if(this.barrier == 0){
+      console.log("in");
+      this.barrier = 1;
+      // tune the interval size for proper submission throttling
+      var x = setTimeout(this.foo.bind(this), 5000);
+    }
+  };
+
   render() {
     return (
       <Stage
@@ -161,6 +181,7 @@ class Test extends Component {
         onContentMousedown={this.handleMouseDown}
         onContentMousemove={this.handleMouseMove}
         onContentMouseup={this.handleMouseUp}
+        onContentMouseover={this.handleMouseOver}
         ref={node => {
           this.stageRef = node;
         }}
