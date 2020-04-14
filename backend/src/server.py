@@ -93,12 +93,12 @@ def mask():
     cropped_mask = mask[:images[0].shape[0], :images[0].shape[1], :]
     print(cropped_mask.shape)
 
-    if(len(masks) >= 1):
-        # cropped_mask = cv2.addWeighted(masks[0], 1, cropped_mask, 0, 0)
-        cropped_mask = cv2.bitwise_or(cropped_mask, masks[0])
-        masks[0] = cropped_mask
-    else:
-        masks.append(cropped_mask)
+    # if(len(masks) >= 1):
+    #     # cropped_mask = cv2.addWeighted(masks[0], 1, cropped_mask, 0, 0)
+    #     cropped_mask = cv2.bitwise_or(cropped_mask, masks[0])
+    #     masks[0] = cropped_mask
+    # else:
+    #     masks.append(cropped_mask)
 
     # overlayed = cv2.addWeighted(images[0], 1, cropped_mask, 0, 0)
 
@@ -109,6 +109,7 @@ def mask():
     cv2.imwrite("mask1.png", cropped_mask)
 
     res = getInpaintedImage(images[0], cropped_mask)
+    images[0] = res
     cv2.imwrite("inpainted.png", res)
 
     return send_file("inpainted.png", mimetype='image/gif')
