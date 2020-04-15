@@ -116,9 +116,6 @@ def mask():
 
 @app.route('/download', methods=['GET'])
 def download():
-
-    # cv2.imwrite("inpainted.png", images[0])
-
     return send_file("inpainted.png", mimetype='image/gif')
 
 if __name__ == "__main__":

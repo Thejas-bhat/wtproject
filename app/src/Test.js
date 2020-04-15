@@ -173,7 +173,7 @@ class Test extends Component {
 
   foo(){
     // tune the interval size for proper submission throttling
-    var d = setInterval(this.send.bind(this), 7000);
+    var d = setInterval(this.send.bind(this), 8000);
   }
 
   handleMouseOver = () => {
@@ -182,7 +182,7 @@ class Test extends Component {
       console.log("in");
       this.barrier = 1;
       // tune the interval size for proper submission throttling
-      var x = setTimeout(this.foo.bind(this), 5000);
+      var x = setTimeout(this.foo.bind(this), 1000);
     }
   };
 
